@@ -5,7 +5,7 @@ import setuptools
 
 setuptools.setup(
     name='fastapi-jinja2',
-    version='0.1.0',
+    version='0.1.1',
     author='Shuaib Mohammad',
     author_email='smartexpert@users.noreply.github.com',
     description='Jinja2 integration for FastAPI',
@@ -16,6 +16,6 @@ setuptools.setup(
         "Bug Tracker": "https://github.com/smartexpert/fastapi-jinja2/issues"
     },
     license='MIT',
-    packages=['fastapi-jinja2'],
+    packages=['fastapi_jinja2'],
     install_requires=['fastapi','Jinja2'],
 )
