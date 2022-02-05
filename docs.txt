@@ -1,0 +1,3 @@
+Configure the templates directory path by calling global_init at the start of the application
+Make sure each path operation function passes the 'request' parameter, named exactly that because the underlying expects that parameter (perhaps this is why _get_response was implemented! so that it is not paramater name dependent!)
+When referencing jinja templates e.g. {% extends 'shared/base.html' % }, the paths are relative to the templates folder
