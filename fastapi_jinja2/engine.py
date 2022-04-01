@@ -12,7 +12,7 @@ __templates: Optional[Any] = None
 template_path: Optional[str] = None
 
 
-def global_init(template_folder: str = "templates", auto_reload=False, cache_init=True):
+def global_init(template_folder: str = "templates", auto_reload=False, cache_init=True,default_prefix_https=False):
     global __templates, template_path
 
     if __templates and cache_init:
@@ -28,6 +28,14 @@ def global_init(template_folder: str = "templates", auto_reload=False, cache_ini
 
     template_path = template_folder
     __templates = Jinja2Templates(directory=template_folder)
+
+    if default_prefix_https:
+        def https_url_for(request: fastapi.Request, name: str, **path_params: Any) -> str:
+            http_url = request.url_for(name, **path_params)
+            # Replace 'http' with 'https'
+            return http_url.replace("http", "https", 1)
+
+        __templates.env.globals["url_for"] = https_url_for
 
 
 def clear():
