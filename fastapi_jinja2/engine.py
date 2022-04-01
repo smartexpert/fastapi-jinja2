@@ -2,6 +2,7 @@ import inspect
 import os
 from functools import wraps
 from typing import Any, Optional, Union, Callable
+import typing
 
 import fastapi
 from fastapi.templating import Jinja2Templates #from chameleon import PageTemplateLoader, PageTemplate
@@ -11,6 +12,16 @@ from fastapi_jinja2.exceptions import FastAPIJinja2Exception, FastAPIJinja2NotFo
 __templates: Optional[Any] = None
 template_path: Optional[str] = None
 
+try:
+    import jinja2
+
+    # @contextfunction renamed to @pass_context in Jinja 3.0, to be removed in 3.1
+    if hasattr(jinja2, "pass_context"):
+        pass_context = jinja2.pass_context
+    else:  # pragma: nocover
+        pass_context = jinja2.contextfunction
+except ImportError:  # pragma: nocover
+    jinja2 = None  # type: ignore
 
 def global_init(template_folder: str = "templates", auto_reload=False, cache_init=True,default_prefix_https=False):
     global __templates, template_path
@@ -30,11 +41,12 @@ def global_init(template_folder: str = "templates", auto_reload=False, cache_ini
     __templates = Jinja2Templates(directory=template_folder)
 
     if default_prefix_https:
-        def https_url_for(request: fastapi.Request, name: str, **path_params: Any) -> str:
-            http_url = request.url_for(name, **path_params)
+        @pass_context
+        def https_url_for(context: dict, name: str, **path_params: typing.Any) -> str:
+            request = context["request"]
+            http_url = request.url_for(name, **path_params)            
             # Replace 'http' with 'https'
             return http_url.replace("http", "https", 1)
-
         __templates.env.globals["url_for"] = https_url_for
 
 
