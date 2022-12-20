@@ -9,6 +9,8 @@ from fastapi.templating import Jinja2Templates #from chameleon import PageTempla
 
 from fastapi_jinja2.exceptions import FastAPIJinja2Exception, FastAPIJinja2NotFoundException
 
+from starlette.datastructures import URL
+
 __templates: Optional[Any] = None
 template_path: Optional[str] = None
 
@@ -48,6 +50,8 @@ def global_init(template_folder: str = "templates", auto_reload=False, cache_ini
             # Replace 'http' with 'https'
             return http_url.replace("http", "https", 1)
         __templates.env.globals["url_for"] = https_url_for
+    
+    __templates.env.globals["URL"] = URL
 
 
 def clear():
